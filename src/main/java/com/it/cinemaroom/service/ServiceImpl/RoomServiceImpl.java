@@ -10,6 +10,7 @@ import com.it.cinemaroom.singleton.RoomSingleton;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,33 +35,33 @@ public class RoomServiceImpl implements RoomService {
 
     // Booking Ticket.
     @Override
-    public PurchaseTicketModel bookSeat(int row, int col) throws RuntimeException {
-        ArrayList<TicketModel> availableSeats = roomInstance.getSeats();
-        try {
-            TicketModel seat = availableSeats.get(((row-1)*9) + col - 1);
-            if(seat.isBooked()) {
-                throw new SeatAlreadyBookedException();
-            }
-            else {
-                seat.setBooked(true);
-                PurchaseTicketModel purchasedTicket = new PurchaseTicketModel(seat);
-                roomInstance.addBookedTickets(purchasedTicket.getToken(), seat);
-                return purchasedTicket;
-            }
-        } catch (IndexOutOfBoundsException e) {
+    public PurchaseTicketModel bookSeat(TicketModel selectedTicket) throws RuntimeException {
+        if(selectedTicket.getRow() > 9 || selectedTicket.getRow() < 1 ||
+                selectedTicket.getColumn() > 9 || selectedTicket.getColumn() < 1)
             throw new WrongSeatException();
-        }
+
+        ArrayList<TicketModel> availableSeats = roomInstance.getSeats();
+        TicketModel seat = availableSeats.stream()
+                .filter(ticket -> ticket.getRow() == selectedTicket.getRow() &&
+                        ticket.getColumn() == selectedTicket.getColumn() &&
+                        !ticket.isBooked())
+                .findAny()
+                .orElseThrow(SeatAlreadyBookedException::new);
+        seat.setBooked(true);
+        PurchaseTicketModel purchasedTicket = new PurchaseTicketModel(seat);
+        roomInstance.addBookedTickets(purchasedTicket.getToken(), seat);
+        return purchasedTicket;
     }
 
     // Returning Booked Ticket.
     @Override
-    public ReturnTicketModel returnTicket(String token) throws RuntimeException {
+    public Map<String, Object> returnTicket(String token) throws RuntimeException {
         TicketModel ticket = roomInstance.getBookedTickets().get(token);
         if(ticket == null) {
             throw new WrongTokenException();
         } else {
             ticket.setBooked(false);
-            return new ReturnTicketModel(ticket);
+            return Map.of("returned_ticket", ticket);
         }
     }
 

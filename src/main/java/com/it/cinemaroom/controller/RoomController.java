@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 public class RoomController {
     final private RoomService roomService;
@@ -21,13 +23,13 @@ public class RoomController {
     }
 
     @PostMapping("purchase")
-    public ResponseEntity<PurchaseTicketModel> bookSeat(@RequestBody TicketModel ticketModel) {
-        return new ResponseEntity<>(roomService.bookSeat(ticketModel.getRow(), ticketModel.getColumn()), HttpStatus.OK);
+    public ResponseEntity<PurchaseTicketModel> bookSeat(@RequestBody TicketModel selectedTicket) {
+        return new ResponseEntity<>(roomService.bookSeat(selectedTicket), HttpStatus.OK);
     }
 
     @PostMapping("return")
-    public ResponseEntity<ReturnTicketModel> returnTicket(@RequestBody PurchaseTicketModel ticket) {
-        return new ResponseEntity<>(roomService.returnTicket(ticket.getToken()), HttpStatus.OK);
+    public Map<String, Object> returnTicket(@RequestBody PurchaseTicketModel ticket) {
+        return roomService.returnTicket(ticket.getToken());
     }
 
     @PostMapping("stats")

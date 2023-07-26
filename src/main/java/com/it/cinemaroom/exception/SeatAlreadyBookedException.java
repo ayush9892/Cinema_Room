@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class SeatAlreadyBookedException extends RuntimeException {
-    @Override
-    public String getMessage() {
-        return "The ticket has been already purchased!";
+    public SeatAlreadyBookedException() {
+        super("The ticket has been already purchased!");
     }
 }

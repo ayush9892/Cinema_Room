@@ -1,9 +1,9 @@
 package com.it.cinemaroom.model;
 
-public class ErrorResponseModel {
+public class CustomErrorResponseModel {
     private String error;
 
-    public ErrorResponseModel(String error) {
+    public CustomErrorResponseModel(String error) {
         this.error = error;
     }
 

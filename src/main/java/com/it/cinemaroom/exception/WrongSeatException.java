@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class WrongSeatException extends RuntimeException {
-    @Override
-    public String getMessage() {
-        return "The number of a row or a column is out of bounds!";
+    public WrongSeatException() {
+        super("The number of a row or a column is out of bounds!");
     }
 }

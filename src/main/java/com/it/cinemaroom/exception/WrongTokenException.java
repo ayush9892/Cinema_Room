@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class WrongTokenException extends RuntimeException {
-    @Override
-    public String getMessage() {
-        return "Wrong token!";
+    public WrongTokenException() {
+        super("Wrong token!");
     }
 }
